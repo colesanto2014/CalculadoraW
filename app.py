@@ -6,7 +6,7 @@ st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered"
 if "pantalla" not in st.session_state:
     st.session_state.pantalla = ""
 
-st.title("🧮 Calculadora Virtual")
+st.title("🧮 Calculadora Virtual V5")
 st.markdown("---")
 
 # Pantalla
