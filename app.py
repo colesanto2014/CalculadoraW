@@ -1,115 +1,127 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
-
-# Inicializar estado
-if "pantalla" not in st.session_state:
-    st.session_state.pantalla = ""
-if "historial" not in st.session_state:
-    st.session_state.historial = []
-
-# CSS para mejorar los botones
-st.markdown("""
-<style>
-div.stButton > button {
-    font-size: 22px !important;
-    height: 60px !important;
-    width: 100% !important;
-    border-radius: 8px !important;
-    font-weight: bold !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.title("🧮 Calculadora Virtual")
-st.markdown("---")
 
-# Pantalla
-valor_pantalla = st.session_state.pantalla if st.session_state.pantalla else "0"
-st.markdown(f"""
-    <div style='background:#1e1e1e; padding:20px; border-radius:10px;
-    font-size:36px; text-align:left; color:white; min-height:70px; margin-bottom:15px;'>
-    {valor_pantalla}
-    </div>
-""", unsafe_allow_html=True)
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    margin: 0;
+  }
+  .calc {
+    background: #1e1e2e;
+    border-radius: 16px;
+    padding: 20px;
+    width: 300px;
+  }
+  #pantalla {
+    background: #313244;
+    color: white;
+    font-size: 32px;
+    text-align: left;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    min-height: 55px;
+    word-break: break-all;
+  }
+  .fila {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  button {
+    padding: 18px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    background: #45475a;
+    transition: background 0.1s;
+  }
+  button:active { opacity: 0.7; }
+  .op  { background: #89b4fa; color: #1e1e2e; }
+  .eq  { background: #a6e3a1; color: #1e1e2e; }
+  .del { background: #f38ba8; color: #1e1e2e; }
+</style>
+</head>
+<body>
+<div class="calc">
+  <div id="pantalla">0</div>
 
-# Funciones
-def presionar(v):
-    st.session_state.pantalla += v
+  <div class="fila">
+    <button class="del" onclick="limpiar()">C</button>
+    <button class="del" onclick="borrar()">DEL</button>
+    <button class="op"  onclick="agregar('%')">%</button>
+    <button class="op"  onclick="agregar('/')">÷</button>
+  </div>
+  <div class="fila">
+    <button onclick="agregar('7')">7</button>
+    <button onclick="agregar('8')">8</button>
+    <button onclick="agregar('9')">9</button>
+    <button class="op" onclick="agregar('*')">×</button>
+  </div>
+  <div class="fila">
+    <button onclick="agregar('4')">4</button>
+    <button onclick="agregar('5')">5</button>
+    <button onclick="agregar('6')">6</button>
+    <button class="op" onclick="agregar('-')">-</button>
+  </div>
+  <div class="fila">
+    <button onclick="agregar('1')">1</button>
+    <button onclick="agregar('2')">2</button>
+    <button onclick="agregar('3')">3</button>
+    <button class="op" onclick="agregar('+')">+</button>
+  </div>
+  <div class="fila">
+    <button onclick="agregar('0')" style="grid-column: span 2;">0</button>
+    <button onclick="agregar('.')">.</button>
+    <button class="eq" onclick="calcular()">=</button>
+  </div>
+</div>
 
-def limpiar():
-    st.session_state.pantalla = ""
+<script>
+  let expresion = "";
 
-def borrar():
-    st.session_state.pantalla = st.session_state.pantalla[:-1]
+  function actualizar() {
+    document.getElementById("pantalla").innerText = expresion || "0";
+  }
 
-def calcular():
-    try:
-        exp = st.session_state.pantalla
-        res = str(eval(exp))
-        st.session_state.historial.append(f"{exp} = {res}")
-        st.session_state.pantalla = res
-    except:
-        st.session_state.pantalla = "Error"
+  function agregar(valor) {
+    expresion += valor;
+    actualizar();
+  }
 
-# Fila 1
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    if st.button("C",   key="btn_c"):  limpiar()
-with c2:
-    if st.button("DEL", key="btn_del"): borrar()
-with c3:
-    if st.button("%",   key="btn_pct"): presionar("%")
-with c4:
-    if st.button("/",   key="btn_div"): presionar("/")
+  function limpiar() {
+    expresion = "";
+    actualizar();
+  }
 
-# Fila 2
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    if st.button("7", key="btn_7"): presionar("7")
-with c2:
-    if st.button("8", key="btn_8"): presionar("8")
-with c3:
-    if st.button("9", key="btn_9"): presionar("9")
-with c4:
-    if st.button("*", key="btn_mul"): presionar("*")
+  function borrar() {
+    expresion = expresion.slice(0, -1);
+    actualizar();
+  }
 
-# Fila 3
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    if st.button("4", key="btn_4"): presionar("4")
-with c2:
-    if st.button("5", key="btn_5"): presionar("5")
-with c3:
-    if st.button("6", key="btn_6"): presionar("6")
-with c4:
-    if st.button("-", key="btn_min"): presionar("-")
-
-# Fila 4
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    if st.button("1", key="btn_1"): presionar("1")
-with c2:
-    if st.button("2", key="btn_2"): presionar("2")
-with c3:
-    if st.button("3", key="btn_3"): presionar("3")
-with c4:
-    if st.button("+", key="btn_sum"): presionar("+")
-
-# Fila 5
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    if st.button("0", key="btn_0"): presionar("0")
-with c2:
-    if st.button(".", key="btn_dot"): presionar(".")
-with c3:
-    st.write("")  # espacio vacío
-with c4:
-    if st.button("=", key="btn_eq"): calcular()
-
-# Historial
-if st.session_state.historial:
-    st.markdown("---")
-    st.markdown("### 📋 Historial")
-    for op in reversed(st.session_state.historial[-5:]):
-        st.write(op)
+  function calcular() {
+    try {
+      expresion = String(eval(expresion));
+    } catch {
+      expresion = "Error";
+    }
+    actualizar();
+  }
+</script>
+</body>
+</html>
+""", height=500)
