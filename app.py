@@ -2,42 +2,14 @@ import streamlit as st
 
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
 
-# ============================
-#   ESTILOS PROFESIONALES
-# ============================
-st.markdown("""
-<style>
-
-button[kind="secondary"] {
-    background-color: #333 !important;
-    color: white !important;
-    border-radius: 10px !important;
-    border: 1px solid #555 !important;
-    font-size: 22px !important;
-    height: 65px !important;
-    margin: 4px 0 !important;
-}
-
-button[kind="secondary"]:hover {
-    background-color: #444 !important;
-    border-color: #777 !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# ============================
-#   ESTADO
-# ============================
+# Estado
 if "pantalla" not in st.session_state:
     st.session_state.pantalla = ""
 
 st.title("🧮 Calculadora Virtual V5")
 st.markdown("---")
 
-# ============================
-#   PANTALLA
-# ============================
+# Pantalla
 valor = st.session_state.pantalla if st.session_state.pantalla else "0"
 
 st.markdown(f"""
@@ -47,9 +19,7 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# ============================
-#   FUNCIÓN CENTRAL
-# ============================
+# Lógica
 def accion(tipo):
     if tipo == "C":
         st.session_state.pantalla = ""
@@ -63,9 +33,7 @@ def accion(tipo):
     else:
         st.session_state.pantalla += tipo
 
-# ============================
-#   BOTONES
-# ============================
+# Botones
 botones = [
     ["C", "DEL", "%", "/"],
     ["7", "8",   "9", "*"],
@@ -74,23 +42,10 @@ botones = [
     ["0", ".",   "="],
 ]
 
-def clave_segura(simbolo):
-    reemplazos = {
-        "+": "plus",
-        "-": "minus",
-        "*": "mul",
-        "/": "div",
-        "%": "percent",
-        "=": "equal",
-        ".": "dot"
-    }
-    return reemplazos.get(simbolo, simbolo)
-
 for fila in botones:
     cols = st.columns(len(fila))
     for i, simbolo in enumerate(fila):
-        key_segura = f"btn_{clave_segura(simbolo)}"
         with cols[i]:
-            if st.button(simbolo, key=key_segura, use_container_width=True, type="secondary"):
+            if st.button(simbolo, use_container_width=True):
                 accion(simbolo)
                 st.rerun()
