@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
 
 # ============================
-#   ESTILOS PROFESIONALES
+#    ESTILOS PROFESIONALES
 # ============================
 st.markdown("""
 <style>
