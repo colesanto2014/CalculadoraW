@@ -91,6 +91,6 @@ for fila in botones:
     for i, simbolo in enumerate(fila):
         key_segura = f"btn_{clave_segura(simbolo)}"
         with cols[i]:
-            if st.button(simbolo, key=key_segura, use_container_width=True):
+            if st.button(simbolo, key=key_segura, use_container_width=True, type="secondary"):
                 accion(simbolo)
                 st.rerun()
