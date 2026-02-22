@@ -2,23 +2,54 @@ import streamlit as st
 
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
 
-# Inicializar estado
+# ============================
+#   ESTILOS PROFESIONALES
+# ============================
+st.markdown("""
+<style>
+
+button[kind="secondary"] {
+    background-color: #333 !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: 1px solid #555 !important;
+    font-size: 22px !important;
+    height: 65px !important;
+    margin: 4px 0 !important;
+}
+
+button[kind="secondary"]:hover {
+    background-color: #444 !important;
+    border-color: #777 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ============================
+#   ESTADO
+# ============================
 if "pantalla" not in st.session_state:
     st.session_state.pantalla = ""
 
 st.title("🧮 Calculadora Virtual V5")
 st.markdown("---")
 
-# Pantalla
+# ============================
+#   PANTALLA
+# ============================
 valor = st.session_state.pantalla if st.session_state.pantalla else "0"
+
 st.markdown(f"""
     <div style='background:#1e1e1e; padding:20px; border-radius:10px;
-    font-size:36px; text-align:left; color:white; min-height:65px; margin-bottom:15px;'>
+    font-size:36px; text-align:right; color:white; min-height:65px; margin-bottom:15px;'>
     {valor}
     </div>
 """, unsafe_allow_html=True)
 
-# Función central
+# ============================
+#   FUNCIÓN CENTRAL
+# ============================
 def accion(tipo):
     if tipo == "C":
         st.session_state.pantalla = ""
@@ -32,7 +63,9 @@ def accion(tipo):
     else:
         st.session_state.pantalla += tipo
 
-# Botones organizados por filas
+# ============================
+#   BOTONES
+# ============================
 botones = [
     ["C", "DEL", "%", "/"],
     ["7", "8",   "9", "*"],
@@ -41,10 +74,23 @@ botones = [
     ["0", ".",   "="],
 ]
 
+def clave_segura(simbolo):
+    reemplazos = {
+        "+": "plus",
+        "-": "minus",
+        "*": "mul",
+        "/": "div",
+        "%": "percent",
+        "=": "equal",
+        ".": "dot"
+    }
+    return reemplazos.get(simbolo, simbolo)
+
 for fila in botones:
     cols = st.columns(len(fila))
     for i, simbolo in enumerate(fila):
+        key_segura = f"btn_{clave_segura(simbolo)}"
         with cols[i]:
-            if st.button(simbolo, key=f"btn_{simbolo}", use_container_width=True):
+            if st.button(simbolo, key=key_segura, use_container_width=True):
                 accion(simbolo)
                 st.rerun()
