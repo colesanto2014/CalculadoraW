@@ -2,26 +2,40 @@ import streamlit as st
 
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
 
-st.title("🧮 Calculadora Virtual")
-st.markdown("---")
-
 # Inicializar estado
 if "pantalla" not in st.session_state:
     st.session_state.pantalla = ""
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
-# Pantalla - texto a la IZQUIERDA
+# CSS para mejorar los botones
+st.markdown("""
+<style>
+div.stButton > button {
+    font-size: 22px !important;
+    height: 60px !important;
+    width: 100% !important;
+    border-radius: 8px !important;
+    font-weight: bold !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("🧮 Calculadora Virtual")
+st.markdown("---")
+
+# Pantalla
+valor_pantalla = st.session_state.pantalla if st.session_state.pantalla else "0"
 st.markdown(f"""
-    <div style='background-color:#1e1e1e; padding:20px; border-radius:10px;
-    font-size:32px; text-align:left; color:white; min-height:60px; margin-bottom:20px;'>
-    {st.session_state.pantalla if st.session_state.pantalla else "0"}
+    <div style='background:#1e1e1e; padding:20px; border-radius:10px;
+    font-size:36px; text-align:left; color:white; min-height:70px; margin-bottom:15px;'>
+    {valor_pantalla}
     </div>
 """, unsafe_allow_html=True)
 
 # Funciones
-def presionar(valor):
-    st.session_state.pantalla += valor
+def presionar(v):
+    st.session_state.pantalla += v
 
 def limpiar():
     st.session_state.pantalla = ""
@@ -31,42 +45,67 @@ def borrar():
 
 def calcular():
     try:
-        expresion = st.session_state.pantalla
-        resultado = str(eval(expresion))
-        st.session_state.historial.append(f"{expresion} = {resultado}")
-        st.session_state.pantalla = resultado
+        exp = st.session_state.pantalla
+        res = str(eval(exp))
+        st.session_state.historial.append(f"{exp} = {res}")
+        st.session_state.pantalla = res
     except:
         st.session_state.pantalla = "Error"
 
-# Botones — se usan claves únicas para evitar conflictos
-col1, col2, col3, col4 = st.columns(4)
+# Fila 1
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    if st.button("C",   key="btn_c"):  limpiar()
+with c2:
+    if st.button("DEL", key="btn_del"): borrar()
+with c3:
+    if st.button("%",   key="btn_pct"): presionar("%")
+with c4:
+    if st.button("/",   key="btn_div"): presionar("/")
 
-with col1:
-    if st.button("C",    key="c",   use_container_width=True): limpiar()
-    if st.button("7",    key="n7",  use_container_width=True): presionar("7")
-    if st.button("4",    key="n4",  use_container_width=True): presionar("4")
-    if st.button("1",    key="n1",  use_container_width=True): presionar("1")
-    if st.button("0",    key="n0",  use_container_width=True): presionar("0")
+# Fila 2
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    if st.button("7", key="btn_7"): presionar("7")
+with c2:
+    if st.button("8", key="btn_8"): presionar("8")
+with c3:
+    if st.button("9", key="btn_9"): presionar("9")
+with c4:
+    if st.button("*", key="btn_mul"): presionar("*")
 
-with col2:
-    if st.button("⌫",   key="bk",  use_container_width=True): borrar()
-    if st.button("8",    key="n8",  use_container_width=True): presionar("8")
-    if st.button("5",    key="n5",  use_container_width=True): presionar("5")
-    if st.button("2",    key="n2",  use_container_width=True): presionar("2")
-    if st.button(".",    key="pt",  use_container_width=True): presionar(".")
+# Fila 3
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    if st.button("4", key="btn_4"): presionar("4")
+with c2:
+    if st.button("5", key="btn_5"): presionar("5")
+with c3:
+    if st.button("6", key="btn_6"): presionar("6")
+with c4:
+    if st.button("-", key="btn_min"): presionar("-")
 
-with col3:
-    if st.button("%",    key="pc",  use_container_width=True): presionar("%")
-    if st.button("9",    key="n9",  use_container_width=True): presionar("9")
-    if st.button("6",    key="n6",  use_container_width=True): presionar("6")
-    if st.button("3",    key="n3",  use_container_width=True): presionar("3")
-    if st.button("=",    key="eq",  use_container_width=True): calcular()
+# Fila 4
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    if st.button("1", key="btn_1"): presionar("1")
+with c2:
+    if st.button("2", key="btn_2"): presionar("2")
+with c3:
+    if st.button("3", key="btn_3"): presionar("3")
+with c4:
+    if st.button("+", key="btn_sum"): presionar("+")
 
-with col4:
-    if st.button("÷",   key="dv",  use_container_width=True): presionar("/")
-    if st.button("×",   key="ml",  use_container_width=True): presionar("*")
-    if st.button("-",    key="mn",  use_container_width=True): presionar("-")
-    if st.button("+",    key="pl",  use_container_width=True): presionar("+")
+# Fila 5
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    if st.button("0", key="btn_0"): presionar("0")
+with c2:
+    if st.button(".", key="btn_dot"): presionar(".")
+with c3:
+    st.write("")  # espacio vacío
+with c4:
+    if st.button("=", key="btn_eq"): calcular()
 
 # Historial
 if st.session_state.historial:
