@@ -87,4 +87,8 @@ def clave_segura(simbolo):
         "*": "mul",
         "/": "div",
         "%": "percent",
-        "=": "equal
+        "=": "equal",
+        ".": "dot"
+    }
+    return reemplazos.get(simbolo, simbolo)
+
