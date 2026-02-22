@@ -92,3 +92,11 @@ def clave_segura(simbolo):
     }
     return reemplazos.get(simbolo, simbolo)
 
+for fila in botones:
+    cols = st.columns(len(fila))
+    for i, simbolo in enumerate(fila):
+        key_segura = f"btn_{clave_segura(simbolo)}"
+        with cols[i]:
+            if st.button(simbolo, key=key_segura, use_container_width=True, type="secondary"):
+                accion(simbolo)
+                st.rerun()
