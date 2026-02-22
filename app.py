@@ -2,14 +2,48 @@ import streamlit as st
 
 st.set_page_config(page_title="Calculadora", page_icon="🧮", layout="centered")
 
-# Estado
+# ============================
+#   ESTILOS PROFESIONALES
+# ============================
+st.markdown("""
+<style>
+
+button[kind="secondary"] {
+    background-color: #333 !important;
+    border-radius: 10px !important;
+    border: 1px solid #555 !important;
+    font-size: 22px !important;
+    height: 65px !important;
+    margin: 4px 0 !important;
+}
+
+/* CORRECCIÓN CRÍTICA:
+   Esto hace que el texto (+, -, *) sea visible */
+button[kind="secondary"] > div > p {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+button[kind="secondary"]:hover {
+    background-color: #444 !important;
+    border-color: #777 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ============================
+#   ESTADO
+# ============================
 if "pantalla" not in st.session_state:
     st.session_state.pantalla = ""
 
 st.title("🧮 Calculadora Virtual V5")
 st.markdown("---")
 
-# Pantalla
+# ============================
+#   PANTALLA
+# ============================
 valor = st.session_state.pantalla if st.session_state.pantalla else "0"
 
 st.markdown(f"""
@@ -19,7 +53,9 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Lógica
+# ============================
+#   FUNCIÓN CENTRAL
+# ============================
 def accion(tipo):
     if tipo == "C":
         st.session_state.pantalla = ""
@@ -33,7 +69,9 @@ def accion(tipo):
     else:
         st.session_state.pantalla += tipo
 
-# Botones
+# ============================
+#   BOTONES
+# ============================
 botones = [
     ["C", "DEL", "%", "/"],
     ["7", "8",   "9", "*"],
@@ -42,10 +80,11 @@ botones = [
     ["0", ".",   "="],
 ]
 
-for fila in botones:
-    cols = st.columns(len(fila))
-    for i, simbolo in enumerate(fila):
-        with cols[i]:
-            if st.button(simbolo, use_container_width=True):
-                accion(simbolo)
-                st.rerun()
+def clave_segura(simbolo):
+    reemplazos = {
+        "+": "plus",
+        "-": "minus",
+        "*": "mul",
+        "/": "div",
+        "%": "percent",
+        "=": "equal
